@@ -102,6 +102,60 @@ compile_data<-function(directory, NA_rows){
 # summarize data       #
 ########################
 
-
+# summarizes the compiled data into:
+## number of screens run
+## percent of patients screened that were infected
+## male vs. female patients
+## age distribution
+# assumes compiled data stored as allData.csv
+summarize_data<-function(){
+  # load all data
+  all_data = read.csv("allData.csv", header=T, stringsAsFactors=F)
+  
+  
+  # find total number of screens run
+  ## assuming every row is a unique screen
+  total_screens <- nrow(all_data)
+  cat("The number of total screens run: ", total_screens, "\n")
+  
+  
+  # percent of patients that were infected
+  total_infected = 0
+  # loop through and count how many screens contain the protein
+  for (i in seq(1,total_screens)) {
+    for (j in seq(3,12)) {
+      if (all_data[i,j] == 1) {
+        total_infected = total_infected + 1
+        break
+      }
+    }
+  }
+  # calculate the percent infected
+  percent_infected = total_infected/total_screens * 100
+  
+  # print results
+  cat("The percent of patients screened that were infected: ", percent_infected ,"%\n")
+  
+  
+  # male vs. female patients
+  number_male_patients = nrow(all_data[all_data$gender == "male",])
+  number_female_patients = nrow(all_data[all_data$gender == "female",])
+  cat("The number of male patients: ", number_male_patients, "\n")
+  cat("The number of female patients: ", number_female_patients, "\n")
+  
+  
+  # age distribution
+  copy_all_data <- all_data
+  copy_all_data$group <- cut(copy_all_data$age, breaks = c(0,10,20,30,40,50,60,70,80,400)
+                             ,labels = c("0-10","10-20","20-30","30-40","40-50","50-60","60-70","70-80","80+"),
+                             right=T)
+  age_distribution <- ggplot(copy_all_data, aes(x=group, fill = gender)) +
+    geom_bar()
+  
+  print(age_distribution)
+  
+  
+  return (all_data)
+}
 
 
