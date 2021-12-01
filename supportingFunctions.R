@@ -120,16 +120,12 @@ summarize_data<-function(){
   
   
   # percent of patients that were infected
-  total_infected = 0
-  # loop through and count how many screens contain the marker
-  for (i in seq(1,total_screens)) {
-    for (j in seq(3,12)) {
-      if (all_data[i,j] == 1) {
-        total_infected = total_infected + 1
-        break
-      }
-    }
-  }
+  ## check if any of markers are a 1
+  total_infected <- nrow(all_data[all_data$marker01==1 | all_data$marker02==1 | all_data$marker03==1 |
+                         all_data$marker04==1 | all_data$marker05==1 | all_data$marker06==1 |
+                         all_data$marker07==1 | all_data$marker08==1 | all_data$marker09==1 |
+                         all_data$marker10==1, ])
+
   # calculate the percent infected
   percent_infected = total_infected/total_screens * 100
   
@@ -150,22 +146,51 @@ summarize_data<-function(){
                              labels = c("0-10","10-20","20-30","30-40","40-50","50-60","60-70","70-80","80+"),
                              right=T)
   age_distribution <- ggplot(copy_all_data, aes(x=group, fill = gender)) +
-    geom_bar()
+    geom_bar() +
+    ggtitle("Age Distribution of all Screenings") +
+    xlab("Age Group") +
+    ylab("Number of Individuals")
   
   print(age_distribution)
   
   
   # which country it likely began in 
+  ## get data on country X
   x_data <- all_data[all_data$country == "X",]
+  x_infected <- x_data[x_data$marker01==1 | x_data$marker02==1 | x_data$marker03==1 |
+                       x_data$marker04==1 | x_data$marker05==1 | x_data$marker06==1 |
+                       x_data$marker07==1 | x_data$marker08==1 | x_data$marker09==1 |
+                       x_data$marker10==1, ]
+  
+  ## get data on country Y
   y_data <- all_data[all_data$country == "Y",]
-  x_screens <- nrow(x_data)
-  y_screens <- nrow(y_data)
+  y_infected <- y_data[y_data$marker01==1 | y_data$marker02==1 | y_data$marker03==1 |
+                         y_data$marker04==1 | y_data$marker05==1 | y_data$marker06==1 |
+                         y_data$marker07==1 | y_data$marker08==1 | y_data$marker09==1 |
+                         y_data$marker10==1, ]
+  
   
   # plot the days and the count of cases
+  x_infected_graph <- ggplot(x_infected, aes(x=dayofYear)) +
+    geom_bar() +
+    xlab("day of Year") +
+    ylab("number of positive cases") +
+    ggtitle("Country X Infected Cases") +
+    xlim(119,180) +
+    ylim(0,500)
+  y_infected_graph <- ggplot(y_infected, aes(x=dayofYear)) +
+    geom_bar() +
+    xlab("day of Year") +
+    ylab("number of positive cases") +
+    ggtitle("Country Y Infected Cases")+
+    xlim(119,180) +
+    ylim(0,500)
+
+  # print results
+  print(x_infected_graph)
+  print(y_infected_graph)
 
   
-  
-  return (all_data)
 }
 
 
