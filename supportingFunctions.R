@@ -121,7 +121,7 @@ summarize_data<-function(){
   
   # percent of patients that were infected
   total_infected = 0
-  # loop through and count how many screens contain the protein
+  # loop through and count how many screens contain the marker
   for (i in seq(1,total_screens)) {
     for (j in seq(3,12)) {
       if (all_data[i,j] == 1) {
@@ -144,15 +144,25 @@ summarize_data<-function(){
   cat("The number of female patients: ", number_female_patients, "\n")
   
   
-  # age distribution
+  # plot age distribution
   copy_all_data <- all_data
-  copy_all_data$group <- cut(copy_all_data$age, breaks = c(0,10,20,30,40,50,60,70,80,400)
-                             ,labels = c("0-10","10-20","20-30","30-40","40-50","50-60","60-70","70-80","80+"),
+  copy_all_data$group <- cut(copy_all_data$age, breaks = c(0,10,20,30,40,50,60,70,80,400),
+                             labels = c("0-10","10-20","20-30","30-40","40-50","50-60","60-70","70-80","80+"),
                              right=T)
   age_distribution <- ggplot(copy_all_data, aes(x=group, fill = gender)) +
     geom_bar()
   
   print(age_distribution)
+  
+  
+  # which country it likely began in 
+  x_data <- all_data[all_data$country == "X",]
+  y_data <- all_data[all_data$country == "Y",]
+  x_screens <- nrow(x_data)
+  y_screens <- nrow(y_data)
+  
+  # plot the days and the count of cases
+
   
   
   return (all_data)
