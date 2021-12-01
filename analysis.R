@@ -3,6 +3,8 @@ rm(list=ls())
 source("supportingFunctions.R")
 library(ggplot2)
 
+# assumes countryY/ and countryX/ are in current working directory
+
 # get allData
 #txt_to_csv("countryY/")
 #compile_data(directory = "countryX", NA_rows = "warn")
