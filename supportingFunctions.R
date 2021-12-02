@@ -1,35 +1,36 @@
+# Coleen Gillilan
+# Megan Cater
+# bios30318
+# R Project
+# supportingFunctions.R
+
 ########################
 # text to csv          #
 ########################
 
 # converts the txt files in a directory to csv files
 txt_to_csv<-function(dir) {
-  # lists the files in the directory
+  # list the files in the directory
   dir_files = list.files(path=dir)
   
-  # for each file in the directory, converts file to csv
+  # for each file in the directory, convert file to csv
   for (file in dir_files) {
-    # checks that the file is a txt file
+    # check that the file is a txt file
     if (substr(file, nchar(file)-3, nchar(file)) == ".txt") {
-      # creates file path
+      # create file path
       file_path = paste(dir, file, sep="")
       
-      # reads data from files in input directory
-      data<-read.table(file_path, header=TRUE, sep="\t", stringsAsFactors=FALSE)
+      # read data from files in input directory
+      data<-read.table(file_path, header=TRUE, stringsAsFactors=FALSE)
       
-      # if delimiter is not a tab, uses a space
-      if (ncol(data) == 1) {
-        data<-read.table(file_path, header=TRUE, sep=" ", stringsAsFactors=FALSE)
-      }
-      
-      # gets name of file without .txt
+      # get name of file without .txt
       file_name = substr(file, 1, nchar(file)-4)
       
-      # creates csv file name and path
+      # create csv file name and path
       csv_file = paste(file_name, ".csv", sep="")
       csv_file_path = paste(dir, csv_file, sep="")
       
-      # writes to csv
+      # write to csv
       write.table(x=data,file=csv_file_path,row.names=FALSE,col.names=TRUE,sep=",")
     }
   }
@@ -170,14 +171,14 @@ summarize_data<-function(){
   
   
   # plot the days and the count of cases
-  x_infected_graph <- ggplot(x_infected, aes(x=dayofYear)) +
+  x_infected_graph <- ggplot(x_infected, aes(x=dayofYear, fill="red")) +
     geom_bar() +
     xlab("day of Year") +
     ylab("number of positive cases") +
     ggtitle("Country X Infected Cases") +
     xlim(119,180) +
     ylim(0,500)
-  y_infected_graph <- ggplot(y_infected, aes(x=dayofYear)) +
+  y_infected_graph <- ggplot(y_infected, aes(x=dayofYear, fill="blue")) +
     geom_bar() +
     xlab("day of Year") +
     ylab("number of positive cases") +
@@ -191,16 +192,10 @@ summarize_data<-function(){
 
   
   ### Determine marker count ###
-  # Country X data
-  countryX_data <- all_data[all_data$country == "X",]
-  
-  # Country Y data
-  countryY_data <- all_data[all_data$country == "Y",]
-  
   # Counts the number of appearances of each marker per country and stores the data
   markers <- data.frame(marker = seq(1,10), 
-                        totalX = colSums(countryX_data[, 3:12] != 0),
-                        totalY = colSums(countryY_data[, 3:12] != 0))
+                        totalX = colSums(x_data[, 3:12] != 0),
+                        totalY = colSums(y_data[, 3:12] != 0))
   markers$marker <- as.factor(markers$marker)
   
   # Plots Country X's marker data
@@ -220,7 +215,4 @@ summarize_data<-function(){
   # print results
   print(x_marker_graph)
   print(y_marker_graph)
-  
 }
-
-
