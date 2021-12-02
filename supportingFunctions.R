@@ -171,15 +171,15 @@ summarize_data<-function(){
   
   
   # plot the days and the count of cases
-  x_infected_graph <- ggplot(x_infected, aes(x=dayofYear, fill="red")) +
-    geom_bar() +
+  x_infected_graph <- ggplot(x_infected, aes(x=dayofYear)) +
+    geom_bar(fill="red") +
     xlab("day of Year") +
     ylab("number of positive cases") +
     ggtitle("Country X Infected Cases") +
     xlim(119,180) +
     ylim(0,500)
-  y_infected_graph <- ggplot(y_infected, aes(x=dayofYear, fill="blue")) +
-    geom_bar() +
+  y_infected_graph <- ggplot(y_infected, aes(x=dayofYear)) +
+    geom_bar(fill="blue") +
     xlab("day of Year") +
     ylab("number of positive cases") +
     ggtitle("Country Y Infected Cases")+
