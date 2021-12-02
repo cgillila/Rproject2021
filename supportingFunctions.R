@@ -113,13 +113,13 @@ summarize_data<-function(){
   all_data = read.csv("allData.csv", header=T, stringsAsFactors=F)
   
   
-  # find total number of screens run
+  ### find total number of screens run ###
   ## assuming every row is a unique screen
   total_screens <- nrow(all_data)
   cat("The number of total screens run: ", total_screens, "\n")
   
   
-  # percent of patients that were infected
+  ### percent of patients that were infected ###
   ## check if any of markers are a 1
   total_infected <- nrow(all_data[all_data$marker01==1 | all_data$marker02==1 | all_data$marker03==1 |
                          all_data$marker04==1 | all_data$marker05==1 | all_data$marker06==1 |
@@ -133,14 +133,13 @@ summarize_data<-function(){
   cat("The percent of patients screened that were infected: ", percent_infected ,"%\n")
   
   
-  # male vs. female patients
+  ### male vs. female patients ###
   number_male_patients = nrow(all_data[all_data$gender == "male",])
   number_female_patients = nrow(all_data[all_data$gender == "female",])
   cat("The number of male patients: ", number_male_patients, "\n")
   cat("The number of female patients: ", number_female_patients, "\n")
   
-  
-  # plot age distribution
+    # plot age distribution
   copy_all_data <- all_data
   copy_all_data$group <- cut(copy_all_data$age, breaks = c(0,10,20,30,40,50,60,70,80,400),
                              labels = c("0-10","10-20","20-30","30-40","40-50","50-60","60-70","70-80","80+"),
@@ -154,7 +153,7 @@ summarize_data<-function(){
   print(age_distribution)
   
   
-  # which country it likely began in 
+  ### which country it likely began in ###
   ## get data on country X
   x_data <- all_data[all_data$country == "X",]
   x_infected <- x_data[x_data$marker01==1 | x_data$marker02==1 | x_data$marker03==1 |
@@ -190,6 +189,37 @@ summarize_data<-function(){
   print(x_infected_graph)
   print(y_infected_graph)
 
+  
+  ### Determine marker count ###
+  # Country X data
+  countryX_data <- all_data[all_data$country == "X",]
+  
+  # Country Y data
+  countryY_data <- all_data[all_data$country == "Y",]
+  
+  # Counts the number of appearances of each marker per country and stores the data
+  markers <- data.frame(marker = seq(1,10), 
+                        totalX = colSums(countryX_data[, 3:12] != 0),
+                        totalY = colSums(countryY_data[, 3:12] != 0))
+  markers$marker <- as.factor(markers$marker)
+  
+  # Plots Country X's marker data
+  x_marker_graph <- ggplot(markers, aes(x = marker, y = totalX, fill = marker)) + 
+    geom_bar(stat = "identity", show.legend = FALSE) +
+    ggtitle("Marker Count of Country X") +
+    xlab("Marker") + ylab("Total") +
+    theme_minimal()
+  
+  # Plots Country Y's marker data
+  y_marker_graph <- ggplot(markers, aes(x = marker, y = totalY, fill = marker)) + 
+    geom_bar(stat = "identity", show.legend = FALSE) +
+    ggtitle("Marker Count of Country Y") +
+    xlab("Marker") + ylab("Total") +
+    theme_minimal()
+  
+  # print results
+  print(x_marker_graph)
+  print(y_marker_graph)
   
 }
 

@@ -3,42 +3,17 @@ rm(list=ls())
 source("supportingFunctions.R")
 library(ggplot2)
 
+### assumptions ###
 # assumes countryY/ and countryX/ are in current working directory
+# assumes allData.csv exists and is an empty file
 
 # get allData
-#txt_to_csv("countryY/")
-#compile_data(directory = "countryX", NA_rows = "warn")
-#compile_data(directory = "countryY", NA_rows = "warn")
+txt_to_csv("countryY/")
+compile_data(directory = "countryX", NA_rows = "warn")
+compile_data(directory = "countryY", NA_rows = "warn")
 
 # summarize data
 summarize_data()
-
-### Determine marker count ###
-# Country X data
-countryX_data <- all_data[all_data$country == "X",]
-
-# Country Y data
-countryY_data <- all_data[all_data$country == "Y",]
-
-# Counts the number of appearances of each marker per country and stores the data
-markers <- data.frame(marker = seq(1,10), 
-                      totalX = colSums(countryX_data[, 3:12] != 0),
-                      totalY = colSums(countryY_data[, 3:12] != 0))
-markers$marker <- as.factor(markers$marker)
-
-# Plots Country X's marker data
-ggplot(markers, aes(x = marker, y = totalX, fill = marker)) + 
-  geom_bar(stat = "identity", show.legend = FALSE) +
-  ggtitle("Marker Count of Country X") +
-  xlab("Marker") + ylab("Total") +
-  theme_minimal()
-
-# Plots Country Y's marker data
-ggplot(markers, aes(x = marker, y = totalY, fill = marker)) + 
-  geom_bar(stat = "identity", show.legend = FALSE) +
-  ggtitle("Marker Count of Country Y") +
-  xlab("Marker") + ylab("Total") +
-  theme_minimal()
 
 
 ### SUMMARY ###
